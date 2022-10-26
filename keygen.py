@@ -38,3 +38,47 @@ def generate_prime()->int:
         n = random.getrandbits(40)
     print("done")
     return n
+
+def calc_e(phi:int)->int:
+    for e in range(2, phi):
+        if math.gcd(e, phi) == 1:
+            return e
+
+
+"""
+Should replace this function by bezout
+Not efficient enough
+"""
+def calc_d(phi:int, e:int)->int:
+    for d in range(phi, 1, -1):
+        if e*d%phi == 1:
+            return d
+
+def __main__():
+    pA = generate_prime()
+    qA = generate_prime()
+    print("Calc n")
+    nA = pA * qA
+    print("N done")
+    print("calc phi")
+    phi = (pA-1)*(qA-1)
+    print("phi done")
+    print("calc e")
+    e = calc_e(phi)
+    print("e done")
+    print("calc d")
+    d = calc_d(phi, e)
+    print("d done")
+    print(f"Your crypt key: e = {e}, n = {nA}")
+    print(f"Your decrypt key: d = {d}")
+
+"""
+p = prime_input("p")
+q = prime_input("q")
+n = p*q
+phi = (p-1)*(q-1)
+e = calc_e(phi)
+d = calc_d(phi, e)
+"""
+
+__main__()
