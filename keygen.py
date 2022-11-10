@@ -1,8 +1,22 @@
 import math
 import random
-import time
-from statistics import mean
 
+class CA():
+    def __init__(self):
+        self.memo = {}
+
+    def generate_keys(self, p:Person):
+        p = generate_prime()
+        q = generate_prime()
+        n = p * q
+        phi = (p-1) * (q-1)
+        e = calc_e(phi)
+        d = bezout(e, phi)
+        self.memo[p.name]=((e, n),(d, n))
+
+class Person():
+    def __init__(self, name:str):
+        self.name = name
 """
 Naive approch
 """
@@ -15,7 +29,7 @@ def naive_is_prime(n: int)->bool:
     return True
     
 """
-From wiki, 6k+-1 optimisation
+From wikipedia, 6k+-1 optimisation
 """
 def is_prime(n: int) -> bool:
     """Primality test using 6k+-1 optimization."""
@@ -72,14 +86,17 @@ def bezout(a: int, b: int)->int:
         lx += ob  # If neg wrap modulo orignal b
     return lx
 #############################################################################
-def crypt(mess:str, n:int, e:int)->list:
+
+def crypt(mess:str, key: tuple)->list:
+    e, n = key
     res = []
     for c in mess:
         c = int(c)
         res.append((c**e)%n)
     return res
 
-def decrypt(mess:list, d:int, n)->str:
+def decrypt(mess:list, key: tuple)->str:
+    d, n = key
     res = ""
     for c in mess:
         res+= str(((c**d)%n))
@@ -87,25 +104,11 @@ def decrypt(mess:list, d:int, n)->str:
 
 def __main__():
     mess = "2052"
-    pA = generate_prime()
-    qA = generate_prime()
-    print("Calc n")
-    nA = pA * qA
-    print("N done")
-    print("calc phi")
-    phi = (pA-1)*(qA-1)
-    print("phi done")
-    print("calc e")
-    e = calc_e(phi)
-    print("e done")
-    print("calc d")
-    d = bezout(e, phi)
-    print("d done")
-    print(f"Your crypt key: e = {e}, n = {nA}")
-    print(f"Your decrypt key: d = {d}")
-    mess_c = crypt(mess, nA, e)
+    Alice = Person()
+    Bob = Person()
+    mess_c = crypt(mess, Alice.public)
     print(mess_c)
-    print(decrypt(mess_c, d, nA))
+    print(decrypt(mess_c, Alice.private))
     
 
 
