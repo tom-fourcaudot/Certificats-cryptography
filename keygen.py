@@ -43,16 +43,36 @@ def calc_e(phi:int)->int:
     for e in range(2, phi):
         if math.gcd(e, phi) == 1:
             return e
-
-
+            
+#############################################################################
 """
-Should replace this function by bezout
-Not efficient enough
+Code from : https://gist.github.com/JekaDeka/c9b0f5da16625e3c7bd1033356354579
+To refractor and understand
 """
-def calc_d(phi:int, e:int)->int:
-    for d in range(phi, 1, -1):
-        if e*d%phi == 1:
-            return d
+def bezout(a, b):
+    """
+    Returns a tuple (r, i, j) such that r = gcd(a, b) = ia + jb
+    """
+    # r = gcd(a,b) i = multiplicitive inverse of a mod b
+    #      or      j = multiplicitive inverse of b mod a
+    # Neg return values for i or j are made positive mod b or a respectively
+    # Iterateive Version is faster and uses much less stack space
+    x = 0
+    y = 1
+    lx = 1
+    ly = 0
+    oa = a  # Remember original a/b to remove
+    ob = b  # negative values from return results
+    while b != 0:
+        q = a // b
+        (a, b) = (b, a % b)
+        (x, lx) = ((lx - (q * x)), x)
+        (y, ly) = ((ly - (q * y)), y)
+    if lx < 0:
+        lx += ob  # If neg wrap modulo orignal b
+    return lx
+#############################################################################
+
 
 def __main__():
     pA = generate_prime()
@@ -67,7 +87,7 @@ def __main__():
     e = calc_e(phi)
     print("e done")
     print("calc d")
-    d = calc_d(phi, e)
+    d = bezout(e, phi)
     print("d done")
     print(f"Your crypt key: e = {e}, n = {nA}")
     print(f"Your decrypt key: d = {d}")
