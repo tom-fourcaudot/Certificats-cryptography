@@ -1,22 +1,46 @@
 import math
 import random
 
+class Person():
+    def __init__(self, name:str, c):
+        self.name = name
+        self.ca = c
+        self.pb_key, self.pv_key = self.__ask_key(c)
+        
+    def __ask_key(self, c):
+        c.generate_keys(self)
+        return c.memo[self.name]
+    
+    def send_message(self, dest, mess:str):
+        dest_key = self.ca.get_pb_key(dest)
+        if dest_key == None:
+            print(f"The personn {dest} is not register in the certificat center")
+            return
+        print(f"{dest} pb_key: {dest_key}")
+        
+        
 class CA():
     def __init__(self):
         self.memo = {}
+        
+    def get_pb_key(self, pers):
+        if pers in self.memo.keys():
+            return self.memo[pers][0]
+        else:
+            return None
 
-    def generate_keys(self, p:Person):
+    def generate_keys(self, pers:Person):
         p = generate_prime()
         q = generate_prime()
         n = p * q
         phi = (p-1) * (q-1)
         e = calc_e(phi)
         d = bezout(e, phi)
-        self.memo[p.name]=((e, n),(d, n))
+        self.memo[pers.name]=((e, n),(d, n))
+        
+    def all_possible_dest(self):
+        return self.memo.keys()
 
-class Person():
-    def __init__(self, name:str):
-        self.name = name
 """
 Naive approch
 """
@@ -61,7 +85,7 @@ def calc_e(phi:int)->int:
 #############################################################################
 """
 Code from : https://gist.github.com/JekaDeka/c9b0f5da16625e3c7bd1033356354579
-To refractor and understand
+To refractor and understand    
 """
 def bezout(a: int, b: int)->int:
     """
@@ -104,12 +128,10 @@ def decrypt(mess:list, key: tuple)->str:
 
 def __main__():
     mess = "2052"
-    Alice = Person()
-    Bob = Person()
-    mess_c = crypt(mess, Alice.public)
-    print(mess_c)
-    print(decrypt(mess_c, Alice.private))
-    
+    Certificat_center = CA()
+    Alice = Person('Alice',Certificat_center)
+    Bob = Person('Bob', Certificat_center)
+    Alice.send_message("Bob", "bonjour")
 
 
 """
