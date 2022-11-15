@@ -25,8 +25,3 @@ def my_hash (message : str)-> str:
 
     hashMess = tmp
     return hashMess
-
-message = "2052"
-print(my_hash(message))
-message = "2052"
-print(my_hash(message))
