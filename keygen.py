@@ -110,21 +110,9 @@ def bezout(a, b):
         lx += ob  # If neg wrap modulo orignal b
     return lx
 #############################################################################
-def crypt(mess:str, n:int, e:int)->list:
-    res = []
-    for c in mess:
-        c = int(c)
-        res.append((c**e)%n)
-    return res
 
-def decrypt(mess:list, d:int, n)->str:
-    res = ""
-    for c in mess:
-        res+= str(((c**d)%n))
-    return res
 
 def __main__():
-    mess = "2052"
     pA = generate_prime()
     qA = generate_prime()
     print("Calc n")
@@ -141,11 +129,6 @@ def __main__():
     print("d done")
     print(f"Your crypt key: e = {e}, n = {nA}")
     print(f"Your decrypt key: d = {d}")
-    mess_c = crypt(mess, nA, e)
-    print(mess_c)
-    print(decrypt(mess_c, d, nA))
-    
-
 
 """
 p = prime_input("p")
