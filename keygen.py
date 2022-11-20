@@ -73,7 +73,7 @@ def generate_prime()->int:
     print("Computing...")
     n = 0
     while not is_prime(n):
-        n = random.getrandbits(10)
+        n = random.getrandbits(40)
     print("done")
     return n
 
@@ -87,7 +87,7 @@ def calc_e(phi:int)->int:
 Code from : https://gist.github.com/JekaDeka/c9b0f5da16625e3c7bd1033356354579
 To refractor and understand    
 """
-def bezout(a: int, b: int)->int:
+def bezout(a, b):
     """
     Returns a tuple (r, i, j) such that r = gcd(a, b) = ia + jb
     """
@@ -110,17 +110,14 @@ def bezout(a: int, b: int)->int:
         lx += ob  # If neg wrap modulo orignal b
     return lx
 #############################################################################
-
-def crypt(mess:str, key: tuple)->list:
-    e, n = key
+def crypt(mess:str, n:int, e:int)->list:
     res = []
     for c in mess:
         c = int(c)
         res.append((c**e)%n)
     return res
 
-def decrypt(mess:list, key: tuple)->str:
-    d, n = key
+def decrypt(mess:list, d:int, n)->str:
     res = ""
     for c in mess:
         res+= str(((c**d)%n))
@@ -128,10 +125,26 @@ def decrypt(mess:list, key: tuple)->str:
 
 def __main__():
     mess = "2052"
-    Certificat_center = CA()
-    Alice = Person('Alice',Certificat_center)
-    Bob = Person('Bob', Certificat_center)
-    Alice.send_message("Bob", "bonjour")
+    pA = generate_prime()
+    qA = generate_prime()
+    print("Calc n")
+    nA = pA * qA
+    print("N done")
+    print("calc phi")
+    phi = (pA-1)*(qA-1)
+    print("phi done")
+    print("calc e")
+    e = calc_e(phi)
+    print("e done")
+    print("calc d")
+    d = bezout(e, phi)
+    print("d done")
+    print(f"Your crypt key: e = {e}, n = {nA}")
+    print(f"Your decrypt key: d = {d}")
+    mess_c = crypt(mess, nA, e)
+    print(mess_c)
+    print(decrypt(mess_c, d, nA))
+    
 
 
 """
