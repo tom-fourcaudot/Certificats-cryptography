@@ -90,14 +90,14 @@ def __main__():
     print(f"Certificat center :\n   public : {pb_CA}\n   private : {pv_CA}\n")
     print(f"{'-'*10}Alice side{'-'*10}")
     alice_message = send_key(pb_A, pv_A, pb_CA)
-    print(f"Alice crypt mess = {alice_message}\n")
+    print(f"Alice crypt mess : {alice_message}\n")
 
     print(f"{'-'*10}CA side{'-'*10}")
     receive_key = verify_signature(pv_CA, alice_message)
     print(f'key receive : {receive_key}')
     message = utils.create_message(receive_key)
     CA_message = crypt(pv_CA, message)
-    print(f"CA crypt message = {CA_message}\n")
+    print(f"CA crypt message : {CA_message}\n")
 
     print(f"{'-'*10}Bob side{'-'*10}")
     decrypt_message = decrypt(pb_CA, CA_message)
